@@ -3,7 +3,7 @@
 import os
 import sys
 import subprocess
-import argparse  # Added for CLI parameter handling
+import argparse
 
 # Check for root privileges
 if os.geteuid() != 0:
@@ -16,9 +16,108 @@ subprocess.run(["apt", "update", "-y"], check=True)
 # List of software to install
 software_list = [
     # (Display Name, Tag, Installation Command)
-    ("Visual Studio Code", "vscode", "installation command"),
-    ("GIMP", "gimp", "apt install -y gimp"),
-    # Add other software entries here...
+    ("Visual Studio Code", "vscode",
+     "wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg; "
+     "install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/; "
+     "echo 'deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] "
+     "https://packages.microsoft.com/repos/vscode stable main' > /etc/apt/sources.list.d/vscode.list; "
+     "apt update -y; apt install -y code; rm packages.microsoft.gpg"),
+    
+    ("GIMP", "gimp", 
+     "apt install -y gimp"),
+    
+    ("Blender", "blender", 
+     "apt install -y blender"),
+    
+    ("OBS Studio", "obs-studio", 
+     "apt install -y obs-studio"),
+    
+    ("Gnome Tweaks", "gnome-tweaks", 
+     "apt install -y gnome-tweaks"),
+    
+    ("VLC", "vlc", 
+     "apt install -y vlc"),
+    
+    ("Node.js", "nodejs", 
+     "curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -; apt install -y nodejs"),
+    
+    ("MongoDB Server", "mongodb-server", 
+     "wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/mongodb.gpg; "
+     "echo 'deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/6.0 multiverse' > /etc/apt/sources.list.d/mongodb-org-6.0.list; "
+     "apt update -y; apt install -y mongodb-org; systemctl enable mongod; systemctl start mongod"),
+    
+    ("MongoDB Compass", "mongodb-compass", 
+     "wget https://downloads.mongodb.com/compass/mongodb-compass_1.35.0_amd64.deb; "
+     "dpkg -i mongodb-compass_1.35.0_amd64.deb; apt install -f -y; rm mongodb-compass_1.35.0_amd64.deb"),
+    
+    ("Figma", "figma", 
+     "wget https://www.figma.com/download/desktop/linux -O figma.deb; "
+     "dpkg -i figma.deb; apt install -f -y; rm figma.deb"),
+    
+    ("Enpass", "enpass", 
+     "echo 'deb https://apt.enpass.io/ stable main' > /etc/apt/sources.list.d/enpass.list; "
+     "wget -O - https://apt.enpass.io/keys/enpass-linux.key | gpg --dearmor > /etc/apt/trusted.gpg.d/enpass.gpg; "
+     "apt update -y; apt install -y enpass"),
+    
+    ("Chromium", "chromium", 
+     "apt install -y chromium-browser"),
+    
+    ("Inkscape", "inkscape", 
+     "apt install -y inkscape"),
+    
+    ("X-Mind", "xmind", 
+     "wget https://www.xmind.net/xmind/downloads/xmind-2021-11-22-amd64.deb; "
+     "dpkg -i xmind-2021-11-22-amd64.deb; apt install -f -y; rm xmind-2021-11-22-amd64.deb"),
+    
+    ("Discord", "discord", 
+     "wget -O discord.deb 'https://discord.com/api/download?platform=linux&format=deb'; "
+     "dpkg -i discord.deb; apt install -f -y; rm discord.deb"),
+    
+    ("CIFS Utils", "cifs-utils", 
+     "apt install -y cifs-utils"),
+    
+    ("Wine", "wine", 
+     "dpkg --add-architecture i386; "
+     "wget -qO- https://dl.winehq.org/wine-builds/winehq.key | gpg --dearmor > /etc/apt/trusted.gpg.d/winehq.gpg; "
+     "echo 'deb https://dl.winehq.org/wine-builds/ubuntu/ $(lsb_release -cs) main' > /etc/apt/sources.list.d/winehq.list; "
+     "apt update -y; apt install -y --install-recommends winehq-stable"),
+    
+    ("Zoom", "zoom", 
+     "wget https://zoom.us/client/latest/zoom_amd64.deb; "
+     "dpkg -i zoom_amd64.deb; apt install -f -y; rm zoom_amd64.deb"),
+    
+    ("Git", "git", 
+     "apt install -y git"),
+    
+    ("Putty", "putty", 
+     "apt install -y putty"),
+    
+    ("Curl", "curl", 
+     "apt install -y curl"),
+    
+    ("Docker", "docker", 
+     "install -m 0755 -d /etc/apt/keyrings; "
+     "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg; "
+     "chmod a+r /etc/apt/keyrings/docker.gpg; "
+     "echo 'deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] "
+     "https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo \"$VERSION_CODENAME\") stable' | "
+     "tee /etc/apt/sources.list.d/docker.list > /dev/null; "
+     "apt update -y; apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin"),
+    
+    ("PostgreSQL", "postgresql", 
+     "apt install -y postgresql"),
+    
+    ("Golang", "golang", 
+     "apt install -y golang-go"),
+    
+    ("Spotify", "spotify", 
+     "curl -sS https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg | gpg --dearmor > /etc/apt/trusted.gpg.d/spotify.gpg; "
+     "echo 'deb http://repository.spotify.com stable non-free' > /etc/apt/sources.list.d/spotify.list; "
+     "apt update -y; apt install -y spotify-client"),
+    
+    ("Postman", "postman", 
+     "wget https://dl.pstmn.io/download/latest/linux_64 -O postman.tar.gz; "
+     "tar -xzf postman.tar.gz -C /opt; ln -s /opt/Postman/Postman /usr/bin/postman; rm postman.tar.gz")
 ]
 
 def install_packages(selections):
